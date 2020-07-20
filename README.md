@@ -1,6 +1,6 @@
 # reactJS
-my first project with ReactJS
+Meu primeiro projeto em ReactJs
 
 
 
-I'm learning in Rocketseat
+*Aprendo com a Rocketseat
