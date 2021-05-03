@@ -17,10 +17,10 @@ function Product (props){
             const response = await api.get(`/products/${id}`);
     
             setState({ product: response.data});
-            return response
+            return response;
         };
         fetchData();
-    },[props.match.params])
+    },[props.match.params]);
 
     return (
         <div className="product-info">

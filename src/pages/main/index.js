@@ -9,30 +9,31 @@ function Main() {
         products: [],
         productInfo: {},
         page: 1,
-    }
-    const [state, setState] = useState(defaultState)
-    useEffect(()=>{loadProducts()},[])
+    };
+    const [state, setState] = useState(defaultState);
 
-    const { products, page, productInfo } = state
+    useEffect(()=>{loadProducts()},[]);
+
+    const { products, page, productInfo } = state;
 
     async function loadProducts (page = 1){
-        const response = await api.get(`/products?page=${page}`)
-        const { docs, ...productInfo } = response.data
-        setState({ products: docs, productInfo, page})
+        const response = await api.get(`/products?page=${page}`);
+        const { docs, ...productInfo } = response.data;
+        setState({ products: docs, productInfo, page});
     }
     function prevPage() {
         if (page === 1) return;
 
         const pageNumber = page - 1;
 
-        loadProducts(pageNumber)
+        loadProducts(pageNumber);
     }
     function nextPage (){
-        if (page === productInfo.pages) return;
+        if (page === productInfo.totalPages) return;
         
         const pageNumber = page + 1;
 
-        loadProducts(pageNumber)
+        loadProducts(pageNumber);
             
     }
     return (
@@ -47,9 +48,8 @@ function Main() {
             ))}
             <div className="actions">
                 <button disabled={page === 1} onClick={prevPage}>Anterior</button>
-                <button disabled={page === productInfo.pages} onClick={nextPage}>Próxima</button>
+                <button disabled={page === productInfo.totalPages} onClick={nextPage}>Próxima</button>
             </div>
         </div>
-    )
-    }
+    )};
 export default Main;
