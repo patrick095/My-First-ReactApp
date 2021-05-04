@@ -6,7 +6,7 @@ import "./styles.css";
 
 function Main() {
     const defaultState = {
-        products: [],
+        docs: [],
         productInfo: {},
         page: 1,
     };
@@ -14,12 +14,19 @@ function Main() {
 
     useEffect(()=>{loadProducts()},[]);
 
-    const { products, page, productInfo } = state;
+    const { docs, page, productInfo } = state;
 
     async function loadProducts (page = 1){
         const response = await api.get(`/products?page=${page}`);
-        const { docs, ...productInfo } = response.data;
-        setState({ products: docs, productInfo, page});
+        var { docs = [], ...productInfo } = response.data;
+        if (docs[0]._id) {
+            console.log(docs)
+            docs.map((product,index) =>{
+                product.id = product._id
+                docs.splice(index, 1, product)
+            })
+        }
+        setState({ docs, productInfo, page});
     }
     function prevPage() {
         if (page === 1) return;
@@ -38,12 +45,11 @@ function Main() {
     }
     return (
         <div className='product-list'>
-            {products.map(product => (
-                <article key={product._id}>
+            {docs.map(product => (
+                <article key={product.id}>
                     <strong>{product.title}</strong>
                     <p>{product.description}</p>
-
-                    <Link to={`/products/${product._id}`}>Acessar</Link>
+                    <Link to={`/products/${product.id}`}>Acessar</Link>
                 </article>
             ))}
             <div className="actions">

@@ -15,7 +15,6 @@ function Product (props){
         async function fetchData(){
             const { id } = props.match.params;
             const response = await api.get(`/products/${id}`);
-    
             setState({ product: response.data});
             return response;
         };
