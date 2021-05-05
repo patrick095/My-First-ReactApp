@@ -13,11 +13,10 @@ function Main() {
     const [state, setState] = useState(defaultState);
     const [chat, setChat] = useState({open:false, name:null,newMsgs:[], insertNameMode: false});
     useEffect(()=>{
-        const info = JSON.parse(localStorage.getItem('chat_info'))
-        loadProducts()
+        const info = JSON.parse(localStorage.getItem('chat_info'));
+        loadProducts();
         if (!info) {
-            setChat({...chat, newMsgs: [{msg:"Por favor, insira seu nome", author: 'Sistema'}], insertNameMode: true})
-            return
+            return setChat({...chat, newMsgs: [{msg:"Por favor, insira seu nome", author: 'Sistema'}], insertNameMode: true});
         }
         else {
         listenSocket(info)
@@ -27,7 +26,11 @@ function Main() {
     const { docs, page, productInfo } = state;
 
     function listenSocket(info){
+        if (info === 0) {
+            socket.emit('update')
+        }
         socket.on('wellcome', newMsgs =>{
+            console.log(newMsgs)
             let msgs = newMsgs[0].msgs;
             if (msgs.length === 0) {
                 setChat({...chat, newMsgs: [{msg: 'Não há mensagens no momento.', author: 'Sistema', time: new Date()}], name: info.name});
@@ -37,7 +40,7 @@ function Main() {
             }
         });
         socket.on('alert', err => {
-            console.log(err)
+            console.log(err);
         });
     };
 
@@ -51,10 +54,10 @@ function Main() {
                 });
             };
             setState({ docs, productInfo, page});
-            document.getElementsByClassName('loading')[0].classList.add('hidden')
+            document.getElementsByClassName('loading')[0].classList.add('hidden');
         }).catch(err =>{
-            console.log(err)
-            alert("Não foi possível conectar a API!")
+            console.log(err);
+            alert("Não foi possível conectar a API!");
         })
     }
     function prevPage() {
@@ -74,8 +77,8 @@ function Main() {
     };
     function openChat(){
         if (!chat.open) {
-            let width = window.innerWidth
-            var hiddeChat
+            let width = window.innerWidth;
+            var hiddeChat;
             if (width <= 800) {
                 hiddeChat = { 
                     width: '30px',
@@ -84,7 +87,7 @@ function Main() {
                     bottom: '10px',
                     zIndex: -1,
                     opacity: 0,
-            }
+            };
             }
             else {
                 hiddeChat = { 
@@ -94,13 +97,13 @@ function Main() {
                     bottom: '10px',
                     zIndex: -1,
                     opacity: 0,
-            }
-            }
+            };
+            };
             document.getElementsByClassName('chatButton')[0].classList.add('displayNone');
             document.getElementsByClassName('chatBox')[0].animate([
                 hiddeChat,
                 { width: '350px', height: '450px', zIndex: 9999, opacity: 1 }
-            ], { fill:'forwards', duration: 200})
+            ], { fill:'forwards', duration: 200});
             document.getElementsByClassName('chatBox')[0].classList.remove('hidden');
             setChat({...chat, open: true});
         }
@@ -116,7 +119,7 @@ function Main() {
                     zIndex: -1,
                     opacity: 0,
             }
-            ], { fill:'forwards', duration: 200})
+            ], { fill:'forwards', duration: 200});
             setChat({...chat, open: false});
         };
     };
@@ -124,14 +127,18 @@ function Main() {
         e.preventDefault();
         let sendMsg = e.target[0].value
         document.getElementById('inputId').value = ''
+        if (sendMsg === 'delName') {
+            localStorage.removeItem('chat_info');
+            return setChat({...chat, newMsgs: [{msg:"Por favor, insira seu nome", author: 'Sistema'}], insertNameMode: true});
+        }
         if (chat.insertNameMode) {
             console.log('insertName')
             localStorage.setItem('chat_info', JSON.stringify({
                 name: sendMsg
             }));
             setChat({...chat, name:sendMsg, insertNameMode: false, newMsgs: []});
-            listenSocket();
-            return
+            listenSocket(0);
+            return;
         }
         const msg = {
             msg: sendMsg,
@@ -142,8 +149,8 @@ function Main() {
     }
     function addZero(i){
         if (i < 10) {
-            i = "0"+i
-            return i
+            i = "0"+i;
+            return i;
         }
         else {
             return i
