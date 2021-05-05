@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { api, socket } from '../../services/api';
 import { Link } from 'react-router-dom';
 import chatLogo from '../../assets/chat.png'
-import userLogo from '../../assets/user.png'
 import "./styles.css";
 
 function Main() {
@@ -17,7 +16,7 @@ function Main() {
         const info = JSON.parse(localStorage.getItem('chat_info'))
         loadProducts()
         if (!info) {
-            setChat({...chat, newMsgs: [{msg:"Por favor, insira seu nome", author: 'Default'}], insertNameMode: true})
+            setChat({...chat, newMsgs: [{msg:"Por favor, insira seu nome", author: 'Sistema'}], insertNameMode: true})
             return
         }
         else {
@@ -75,15 +74,31 @@ function Main() {
     };
     function openChat(){
         if (!chat.open) {
-            document.getElementsByClassName('chatButton')[0].classList.add('displayNone');
-            document.getElementsByClassName('chatBox')[0].animate([
-                { width: '30px',
+            let width = window.innerWidth
+            var hiddeChat
+            if (width <= 800) {
+                hiddeChat = { 
+                    width: '30px',
                     height: '30px',
-                    right: '50px',
-                    bottom: '100px',
+                    right: '10px',
+                    bottom: '10px',
                     zIndex: -1,
                     opacity: 0,
-                },
+            }
+            }
+            else {
+                hiddeChat = { 
+                    width: '30px',
+                    height: '30px',
+                    right: '10px',
+                    bottom: '10px',
+                    zIndex: -1,
+                    opacity: 0,
+            }
+            }
+            document.getElementsByClassName('chatButton')[0].classList.add('displayNone');
+            document.getElementsByClassName('chatBox')[0].animate([
+                hiddeChat,
                 { width: '350px', height: '450px', zIndex: 9999, opacity: 1 }
             ], { fill:'forwards', duration: 200})
             document.getElementsByClassName('chatBox')[0].classList.remove('hidden');
@@ -93,13 +108,14 @@ function Main() {
             document.getElementsByClassName('chatButton')[0].classList.remove('displayNone');
             document.getElementsByClassName('chatBox')[0].animate([
                 { width: '350px', height: '450px', zIndex: '9999', opacity: '1' },
-                { width: '30px',
+                { 
+                    width: '30px',
                     height: '30px',
-                    right: '50px',
-                    bottom: '100px',
+                    right: '10px',
+                    bottom: '10px',
                     zIndex: -1,
-                    opacity: 0
-                }
+                    opacity: 0,
+            }
             ], { fill:'forwards', duration: 200})
             setChat({...chat, open: false});
         };
