@@ -31,16 +31,13 @@ function Main() {
         }
         socket.on('wellcome', newMsgs =>{
             console.log(newMsgs)
-            let msgs = newMsgs[0].msgs;
+            let msgs = newMsgs.msgs;
             if (msgs.length === 0) {
                 setChat({...chat, newMsgs: [{msg: 'Não há mensagens no momento.', author: 'Sistema', time: new Date()}], name: info.name});
             }
             else {
                 setChat({...chat, newMsgs: [...msgs], name: info.name});
             }
-        });
-        socket.on('alert', err => {
-            console.log(err);
         });
     };
 
